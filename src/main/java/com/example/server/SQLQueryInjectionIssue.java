@@ -14,11 +14,9 @@ public class UserLoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { // <-- Taint source
         String user = req.getParameter("user"); // <-- Taint propagated from source
-        String pass = req.getParameter("pass"); // <-- Taint propagated from source
-
-        String otherQuery = "SELECT * FROM users WHERE user = " + user + " AND = " + pass; // <-- Taint propagated from above variables
+        String query = "SELECT * FROM users WHERE user = " + user; // <-- Taint propagated from the above variable
 
         Connection connection = DriverManager.getConnection("jdbc:yourdatabaseurl", "username", "password");
-        PreparedStatement statement = connection.prepareStatement(otherQuery); // <-- Taint sink
+        PreparedStatement statement = connection.prepareStatement(query); // <-- Taint sink
     }
 }
